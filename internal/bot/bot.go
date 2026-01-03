@@ -1,6 +1,8 @@
 package bot
 
 import (
+	"crypto/sha256"
+	"encoding/hex"
 	"fmt"
 	"io"
 	"strings"
@@ -30,9 +32,11 @@ func New(s Source) *SearchBot {
 	if !strings.HasPrefix(s.Channel, "#") {
 		s.Channel = "#" + s.Channel
 	}
+	// create a unique nick that should still be unique enough even when truncated
+	hash := hex.EncodeToString(sha256.New().Sum([]byte(fmt.Sprintf("%d", time.Now().UnixNano()))))
 	return &SearchBot{
 		source: s,
-		nick:   fmt.Sprintf("bookseeker_%d", 891),
+		nick:   fmt.Sprintf("bk-%s", hash[:8]),
 	}
 }
 

@@ -2,6 +2,8 @@
 
 A command-line tool for searching and downloading ebooks (via IRC + DCC).
 
+![screenshot](screenshot.png)
+
 ## Disclaimer
 
 This tool is provided for educational purposes and for downloading legally available content only. Users are solely responsible for ensuring they have the right to download any content they access. The author does not condone or encourage copyright infringement.

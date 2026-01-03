@@ -14,6 +14,7 @@ type Config struct {
 	Source          bot.Source
 	Query           string
 	LimitExtensions []string
+	OutputFile      string
 }
 
 func Run(cfg Config) error {
@@ -26,7 +27,9 @@ func Run(cfg Config) error {
 	if err := b.Connect(); err != nil {
 		return err
 	}
+	defer b.Close()
 
+	fmt.Printf("Searching for \x1b[32m%s\x1b[0m...\n", cfg.Query)
 	results, err := b.Search(cfg.Query, cfg.LimitExtensions)
 	if err != nil {
 		return err
@@ -60,19 +63,22 @@ func Run(cfg Config) error {
 	}
 
 	selected := results[choice-1]
-	fmt.Printf("\nDownloading: %s\n", selected.Filename)
 
+	fmt.Printf("\nDownloading \x1b[32m%s\x1b[0m...\n", selected.Filename)
 	data, err := b.Download(selected)
 	if err != nil {
 		return fmt.Errorf("failed to download: %w", err)
 	}
 
-	// Save to file
 	outFile := selected.Filename
+	if cfg.OutputFile != "" {
+		outFile = cfg.OutputFile
+	}
+	fmt.Println("Download complete, writing to disk...")
 	if err := os.WriteFile(outFile, data, 0600); err != nil {
 		return fmt.Errorf("failed to save file: %w", err)
 	}
+	fmt.Printf("Saved to \x1b[32m%s\x1b[0m\n", outFile)
 
-	fmt.Printf("Saved to: %s\n", outFile)
 	return nil
 }

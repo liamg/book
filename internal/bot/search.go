@@ -41,23 +41,19 @@ func (b *SearchBot) Search(query string, limitExtensions []string) ([]Result, er
 
 		dccSend, err := dcc.ParseSendMessage(msg)
 		if err != nil {
-			fmt.Println("failed to parse DCC SEND:", err)
 			return
 		}
 		stream, err := dcc.Receive(dccSend, true)
 		if err != nil {
-			fmt.Println("failed to receive DCC SEND:", err)
 			return
 		}
 		defer stream.Close()
 		data, err := io.ReadAll(stream)
 		if err != nil {
-			fmt.Println("failed to read DCC SEND data:", err)
 			return
 		}
 		parsedResults, err := parseResults(data)
 		if err != nil {
-			fmt.Println("failed to parse results:", err)
 			return
 		}
 		parsedResults = filterResultsByExtension(parsedResults, limitExtensions)

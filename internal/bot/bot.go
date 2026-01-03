@@ -36,6 +36,15 @@ func New(s Source) *SearchBot {
 	}
 }
 
+func (b *SearchBot) Close() {
+	b.mu.Lock()
+	defer b.mu.Unlock()
+	if b.client != nil {
+		b.client.Close()
+		b.client = nil
+	}
+}
+
 func (b *SearchBot) Connect() error {
 	b.mu.Lock()
 	defer b.mu.Unlock()

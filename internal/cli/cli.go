@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"path/filepath"
 	"strconv"
 	"strings"
 
@@ -72,7 +73,17 @@ func Run(cfg Config) error {
 
 	outFile := selected.Filename
 	if cfg.OutputFile != "" {
-		outFile = cfg.OutputFile
+		isDir := strings.HasSuffix(outFile, string(filepath.Separator))
+		if !isDir {
+			if stat, err := os.Stat(cfg.OutputFile); err == nil && stat.IsDir() {
+				isDir = true
+			}
+		}
+		if isDir {
+			outFile = filepath.Join(cfg.OutputFile, filepath.Base(selected.Filename))
+		} else {
+			outFile = cfg.OutputFile
+		}
 	}
 	fmt.Println("Download complete, writing to disk...")
 	if err := os.WriteFile(outFile, data, 0600); err != nil {

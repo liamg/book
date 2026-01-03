@@ -12,6 +12,7 @@ var sourcePort int
 var sourceChannel string
 var useUndernet bool
 var limitExtensions []string
+var outputFile string
 
 var rootCmd = &cobra.Command{
 	Use:   "book [query]",
@@ -34,6 +35,7 @@ var rootCmd = &cobra.Command{
 			},
 			Query:           strings.Join(args, " "),
 			LimitExtensions: limitExtensions,
+			OutputFile:      outputFile,
 		}
 		return Run(cfg)
 	},
@@ -45,5 +47,6 @@ func Execute() error {
 	rootCmd.Flags().StringVarP(&sourceChannel, "channel", "c", "#ebooks", "IRC channel to join")
 	rootCmd.Flags().BoolVarP(&useUndernet, "undernet", "u", false, "Use Undernet IRC network")
 	rootCmd.Flags().StringSliceVarP(&limitExtensions, "ext", "e", []string{}, "Limit search to specific file extension(s) e.g. epub")
+	rootCmd.Flags().StringVarP(&outputFile, "output", "o", "", "Output file name")
 	return rootCmd.Execute()
 }
